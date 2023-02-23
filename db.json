@@ -2,23 +2,18 @@
   "projects": [
     {
       "name": "carlos wilson ricarte miranda",
-      "budget": "0100",
+      "budget": "2000",
       "category": {
         "id": "2",
         "name": "Desenvolvimento"
       },
-      "cost": 62,
+      "cost": 1500,
       "services": [
         {
-          "name": "dev",
-          "cost": "50",
-          "description": "dev de teste",
-          "id": "04170f8a-2d7e-4030-8602-1df6c027366b"
-        },
-        {
-          "name": "teste",
-          "cost": "12",
-          "id": "004037cc-0e67-4171-9640-0a5178841d7e"
+          "name": "serv",
+          "cost": "1500",
+          "description": "server de teste",
+          "id": "76190c72-3fa3-4acd-b3c8-5e636113aaf4"
         }
       ],
       "id": 1

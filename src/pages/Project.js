@@ -18,7 +18,7 @@ export function Project() {
     const [showProjectForm, setShowProjectForm] = useState(false)
     const [showServiceForm, setShowServiceForm] = useState(false)
 
-    const [message, setMessage] = useState();
+    const [message, setMessage] = useState([]);
     const [messageType, setMessageType] = useState();
 
     useEffect(() => {
@@ -35,9 +35,13 @@ export function Project() {
         .catch((err) => console.log(err))
     }, [id])
 
+    function atualizarMessageTimer(){
+        setTimeout(() => (setMessage()), 3000)
+    }
+
     function createService(project){
 
-        setMessage(false);
+        setMessage();
         
 
         const lastService = project.services[project.services.length - 1]
@@ -52,6 +56,7 @@ export function Project() {
             
             setMessage('Orçamento ultrapassado, verifique o valor do serviço');
             setMessageType('error');
+            atualizarMessageTimer()
             project.services.pop()
             return false
         }
@@ -70,6 +75,7 @@ export function Project() {
         }).then((resp) =>resp.json())
         .then((data) => {
             setProject(data)
+            setServices(data.services)
             setShowServiceForm(false)
             setMessage('Serviço adicionado com sucesso!')
             setMessageType('success');
@@ -80,9 +86,33 @@ export function Project() {
 
     }
 
-    function removeService(){
-
-    }
+    function removeService(id, cost) {
+        setMessage(false);
+        const servicesUpdated = project.services.filter(
+          (service) => service.id !== id
+        )
+    
+        const projectUpdated = project
+    
+        projectUpdated.services = servicesUpdated
+        projectUpdated.cost = parseFloat(projectUpdated.cost) - parseFloat(cost)
+    
+        fetch(`http://localhost:5000/projects/${projectUpdated.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(projectUpdated),
+        })
+          .then((resp) => resp.json())
+          .then((data) => {
+            setProject(projectUpdated)
+            setServices(servicesUpdated)
+            setMessage('Serviço removido com sucesso!')
+            setMessageType('success')
+            
+          })
+      }
 
     function toggleProjectForm(){
         setShowProjectForm(!showProjectForm)
@@ -93,11 +123,12 @@ export function Project() {
     }
 
     function editPost(project){
-        setMessage('sem info')
+        setMessage(false);
         //budget validation
         if(project.budget < project.cost){
             setMessage('Orçamento não pode ser menor que o valor alocado!')
             setMessageType('error');
+            atualizarMessageTimer()
             return false
         }
 
@@ -161,7 +192,7 @@ export function Project() {
                     cost={service.cost}
                     description={service.description}
                     key={service.id}
-                    handkleRemove={removeService}
+                    handleRemove={removeService}
                 />
                ))}
                {services.length === 0 && <p>Não há serviços cadastrados</p>}

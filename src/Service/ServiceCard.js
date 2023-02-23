@@ -7,7 +7,7 @@ export function ServiceCard({id, key, name, cost, description, handleRemove}) {
 
   const remove = (e) => {
     e.preventDefault()
-    handleRemove(id)
+    handleRemove(id, cost)
   }
   return (
     <div className={style.project_card}>
